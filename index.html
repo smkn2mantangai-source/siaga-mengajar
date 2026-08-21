@@ -69,7 +69,7 @@
     <div id="view-landing" class="view-section active-view">
       <div class="text-center mb-12">
         <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Sistem Akademik Terpadu</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang-di Siaga Mengajar</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang di Siaga Mengajar</h1>
         <p class="text-slate-500 max-w-2xl mx-auto text-sm md:text-base">Portal Manajemen Akademik, Presensi, Nilai, dan Jurnal Harian Mengajar Guru. Silakan pilih portal akses Anda.</p>
       </div>
 
@@ -924,7 +924,12 @@
       selKelas.innerHTML = '<option value="">-- Memuat Kelas... --</option>';
       selMapel.innerHTML = '<option value="">-- Pilih Kelas Terlebih Dahulu --</option>';
 
-      const resJadwal = await callAPI('getJadwal', 'GET', { idGuru: currentUser ? currentUser.id : '', role: currentUser ? currentUser.role : '' });
+      const resJadwal = await callAPI('getJadwal', 'GET', { 
+        idGuru: currentUser ? currentUser.id : '', 
+        namaGuru: currentUser ? currentUser.nama : '',
+        username: currentUser ? currentUser.username : '',
+        role: currentUser ? currentUser.role : '' 
+      });
       teacherJadwalList = resJadwal || [];
 
       if (currentUser && currentUser.role === 'Admin') {
