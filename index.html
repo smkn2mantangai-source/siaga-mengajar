@@ -109,6 +109,7 @@
       </div>
     </div>
 
+    <!-- VIEW: LOGIN -->
     <div id="view-login" class="view-section">
       <div class="max-w-md mx-auto">
         <button onclick="goHome()" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm mb-6 flex items-center gap-2 transition-colors cursor-pointer">
@@ -145,6 +146,7 @@
       </div>
     </div>
 
+    <!-- VIEW: PORTAL TAMU -->
     <div id="view-portal-tamu" class="view-section">
       <div class="max-w-md mx-auto">
         <button onclick="goHome()" class="text-emerald-600 hover:text-emerald-800 font-semibold text-sm mb-4 flex items-center gap-2 transition-colors cursor-pointer">
@@ -177,6 +179,7 @@
       </div>
     </div>
 
+    <!-- VIEW: HASIL TAMU -->
     <div id="view-hasil-tamu" class="view-section">
       <div class="max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -434,11 +437,17 @@
         </div>
         
         <div class="p-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div>
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Kelas & Mata Pelajaran</label>
-              <select id="guru-jadwal" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 cursor-pointer" onchange="onGuruJadwalChange()">
-                <option value="">-- Pilih Kelas & Mapel --</option>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Pilih Kelas</label>
+              <select id="guru-kelas" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 cursor-pointer" onchange="onGuruJadwalChange()">
+                <option value="">-- Pilih Kelas --</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Mata Pelajaran</label>
+              <select id="guru-mapel" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 cursor-pointer" onchange="onGuruJadwalChange()">
+                <option value="">-- Pilih Mapel --</option>
               </select>
             </div>
             <div>
@@ -700,7 +709,6 @@
         }
 
         setView('view-guru');
-        loadJadwalGuru();
       } else {
         Swal.fire('Gagal Login', res.message || 'Username atau Password salah!', 'error');
       }
@@ -906,20 +914,33 @@
       doc.save(`Raport_${nama.replace(/\s+/g, '_')}.pdf`);
     }
 
-    async function loadJadwalGuru() {
-      const selJadwal = document.getElementById('guru-jadwal');
-      if (!selJadwal) return;
-      selJadwal.innerHTML = '<option value="">-- Memuat Jadwal Mengajar... --</option>';
+    async function loadKelasAndMapelGuru() {
+      const selKelas = document.getElementById('guru-kelas');
+      const selMapel = document.getElementById('guru-mapel');
+      if (!selKelas || !selMapel) return;
 
-      const res = await callAPI('getJadwal', 'GET', { idGuru: currentUser.id, role: currentUser.role });
-      if (res && res.length > 0) {
-        let html = '<option value="">-- Pilih Kelas & Mapel --</option>';
-        res.forEach(j => {
-          html += `<option value="${j.kelas}|${j.mapel}">Kelas ${j.kelas} - ${j.mapel}</option>`;
-        });
-        selJadwal.innerHTML = html;
-      } else {
-        selJadwal.innerHTML = '<option value="">-- Belum ada jadwal terdaftar --</option>';
+      if (selKelas.options.length <= 1) {
+        selKelas.innerHTML = '<option value="">-- Memuat Kelas... --</option>';
+        const resKelas = await callAPI('getKelas', 'GET');
+        if (resKelas && resKelas.length > 0) {
+          let html = '<option value="">-- Pilih Kelas --</option>';
+          resKelas.forEach(k => { html += `<option value="${k}">${k}</option>`; });
+          selKelas.innerHTML = html;
+        } else {
+          selKelas.innerHTML = '<option value="">-- Tidak Ada Kelas --</option>';
+        }
+      }
+
+      if (selMapel.options.length <= 1) {
+        selMapel.innerHTML = '<option value="">-- Memuat Mapel... --</option>';
+        const resMapel = await callAPI('getDaftarMapel', 'GET');
+        if (resMapel && resMapel.length > 0) {
+          let html = '<option value="">-- Pilih Mata Pelajaran --</option>';
+          resMapel.forEach(m => { html += `<option value="${m}">${m}</option>`; });
+          selMapel.innerHTML = html;
+        } else {
+          selMapel.innerHTML = '<option value="">-- Tidak Ada Mapel --</option>';
+        }
       }
     }
 
@@ -959,19 +980,83 @@
         formSiswa.classList.add('hidden');
       }
 
+      loadKelasAndMapelGuru();
       onGuruJadwalChange();
       window.scrollTo({ top: document.getElementById('panel-input').offsetTop - 80, behavior: 'smooth' });
     }
 
-    async function onGuruJadwalChange() {
-      const val = document.getElementById('guru-jadwal').value;
-      if (!val) {
-        document.getElementById('tabel-input-siswa').innerHTML = '<tr><td colspan="3" class="px-6 py-6 text-center text-slate-400">Pilih kelas di atas terlebih dahulu.</td></tr>';
+    function switchGuruMode(mode) {
+      currentGuruMode = mode;
+      const btnInput = document.getElementById('btn-mode-input');
+      const btnRekap = document.getElementById('btn-mode-rekap');
+      const subInput = document.getElementById('subarea-input-mode');
+      const subRekap = document.getElementById('subarea-rekap-mode');
+      const filterDate = document.getElementById('filter-rekap-absen-date');
+
+      if (mode === 'input') {
+        btnInput.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors flex items-center gap-2 cursor-pointer";
+        btnRekap.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 cursor-pointer";
+        subInput.classList.remove('hidden');
+        subRekap.classList.add('hidden');
+      } else {
+        btnRekap.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors flex items-center gap-2 cursor-pointer";
+        btnInput.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 cursor-pointer";
+        subInput.classList.add('hidden');
+        subRekap.classList.remove('hidden');
+
+        if (activeInputType === 'absen') {
+          filterDate.classList.remove('hidden');
+        } else {
+          filterDate.classList.add('hidden');
+        }
+
+        loadRekapGuru();
+      }
+    }
+
+    function renderInputTabelGuru(existingNilaiMap = {}) {
+      const tbody = document.getElementById('tabel-input-siswa');
+      tbody.innerHTML = '';
+
+      if (currentSiswaData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-6 text-center text-slate-400">Pilih Kelas dan Mata Pelajaran terlebih dahulu.</td></tr>';
         return;
       }
 
-      const kelas = val.split('|')[0];
-      const mapel = val.split('|')[1];
+      currentSiswaData.forEach((s, idx) => {
+        let inputField = '';
+        if (activeInputType === 'absen') {
+          inputField = `
+            <select id="input_${idx}" class="p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 font-semibold focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+              <option value="Hadir" selected>Hadir</option>
+              <option value="Sakit">Sakit</option>
+              <option value="Izin">Izin</option>
+              <option value="Alpa">Alpa</option>
+            </select>`;
+        } else if (activeInputType === 'nilai') {
+          let val = existingNilaiMap[s.nis] !== undefined ? existingNilaiMap[s.nis] : 0;
+          inputField = `<input type="number" min="0" max="100" id="input_${idx}" value="${val}" placeholder="0" class="w-24 p-2 text-center border border-slate-200 rounded-lg text-xs bg-slate-50 font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-500 outline-none">`;
+        }
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-6 py-3 font-mono text-slate-500">${s.nis}</td>
+            <td class="px-6 py-3 font-bold text-slate-800">${s.nama}</td>
+            <td class="px-6 py-3 text-center">${inputField}</td>
+          </tr>`;
+      });
+    }
+
+    async function onGuruJadwalChange() {
+      const kelas = document.getElementById('guru-kelas').value;
+      const mapel = document.getElementById('guru-mapel').value;
+
+      if (!kelas || !mapel) {
+        if (activeInputType !== 'jurnal') {
+          document.getElementById('tabel-input-siswa').innerHTML = '<tr><td colspan="3" class="px-6 py-6 text-center text-slate-400">Pilih Kelas dan Mata Pelajaran di atas terlebih dahulu.</td></tr>';
+        }
+        return;
+      }
 
       if (activeInputType === 'jurnal') {
         loadRiwayatJurnalGuru();
@@ -997,79 +1082,17 @@
       }
     }
 
-    function switchGuruMode(mode) {
-      currentGuruMode = mode;
-      const btnInput = document.getElementById('btn-mode-input');
-      const btnRekap = document.getElementById('btn-mode-rekap');
-      const subInput = document.getElementById('subarea-input-mode');
-      const subRekap = document.getElementById('subarea-rekap-mode');
-      const filterDate = document.getElementById('filter-rekap-absen-date');
-
-      if (mode === 'input') {
-        btnInput.className = 'py-2.5 px-5 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors flex items-center gap-2 cursor-pointer';
-        btnRekap.className = 'py-2.5 px-5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 cursor-pointer';
-        subInput.classList.remove('hidden');
-        subRekap.classList.add('hidden');
-      } else {
-        btnRekap.className = 'py-2.5 px-5 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors flex items-center gap-2 cursor-pointer';
-        btnInput.className = 'py-2.5 px-5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 cursor-pointer';
-        subInput.classList.add('hidden');
-        subRekap.classList.remove('hidden');
-
-        if (activeInputType === 'absen') {
-          filterDate.classList.remove('hidden');
-        } else {
-          filterDate.classList.add('hidden');
-        }
-
-        loadRekapGuru();
-      }
-    }
-
-    function renderInputTabelGuru(existingNilaiMap = {}) {
-      const tbody = document.getElementById('tabel-input-siswa');
-      tbody.innerHTML = '';
-
-      if (currentSiswaData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-6 text-center text-slate-400">Tidak ada siswa terdaftar di kelas ini.</td></tr>';
-        return;
-      }
-
-      currentSiswaData.forEach((s, idx) => {
-        let controlHTML = '';
-        if (activeInputType === 'absen') {
-          controlHTML = `
-            <select id="input_${idx}" class="p-2 border border-slate-200 rounded-lg text-xs font-bold bg-slate-50 focus:bg-white outline-none">
-              <option value="Hadir" class="text-emerald-600 font-bold">Hadir</option>
-              <option value="Sakit" class="text-amber-600 font-bold">Sakit</option>
-              <option value="Izin" class="text-blue-600 font-bold">Izin</option>
-              <option value="Alpa" class="text-red-600 font-bold">Alpa</option>
-            </select>`;
-        } else if (activeInputType === 'nilai') {
-          let scoreVal = existingNilaiMap[s.nis] !== undefined ? existingNilaiMap[s.nis] : 0;
-          controlHTML = `
-            <input type="number" id="input_${idx}" value="${scoreVal}" min="0" max="100" placeholder="0 - 100" class="w-24 p-2 border border-slate-200 rounded-lg text-xs font-bold text-center bg-slate-50 focus:bg-white outline-none">`;
-        }
-
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition-colors">
-            <td class="px-6 py-3.5 font-mono text-slate-500">${s.nis}</td>
-            <td class="px-6 py-3.5 font-bold text-slate-800">${s.nama}</td>
-            <td class="px-6 py-3.5 text-center">${controlHTML}</td>
-          </tr>`;
-      });
-    }
-
     async function submitDataSiswa() {
-      const jadwal = document.getElementById('guru-jadwal').value;
+      const kelas = document.getElementById('guru-kelas').value;
+      const mapel = document.getElementById('guru-mapel').value;
       const tanggal = document.getElementById('guru-tanggal').value;
-      if (!jadwal) return Swal.fire('Perhatian', 'Pilih jadwal kelas terlebih dahulu!', 'warning');
+      if (!kelas || !mapel) return Swal.fire('Perhatian', 'Pilih Kelas dan Mata Pelajaran terlebih dahulu!', 'warning');
 
       let payload = {
         tanggal: tanggal,
         idGuru: currentUser.id,
-        kelas: jadwal.split('|')[0],
-        mapel: jadwal.split('|')[1],
+        kelas: kelas,
+        mapel: mapel,
         siswa: []
       };
 
@@ -1103,20 +1126,21 @@
     }
 
     async function submitJurnal() {
-      const jadwal = document.getElementById('guru-jadwal').value;
+      const kelas = document.getElementById('guru-kelas').value;
+      const mapel = document.getElementById('guru-mapel').value;
       const tanggal = document.getElementById('guru-tanggal').value;
       const materi = document.getElementById('jurnal-materi').value.trim();
       const ket = document.getElementById('jurnal-ket').value.trim();
 
-      if (!jadwal || !materi) {
-        return Swal.fire('Perhatian', 'Harap pilih Kelas/Mapel dan isi Pokok Materi!', 'warning');
+      if (!kelas || !mapel || !materi) {
+        return Swal.fire('Perhatian', 'Harap pilih Kelas, Mata Pelajaran, dan isi Pokok Materi!', 'warning');
       }
 
       const payload = {
         tanggal: tanggal,
         idGuru: currentUser.id,
-        kelas: jadwal.split('|')[0],
-        mapel: jadwal.split('|')[1],
+        kelas: kelas,
+        mapel: mapel,
         materi: materi,
         keterangan: ket
       };
@@ -1141,14 +1165,12 @@
       const res = await callAPI('getJurnalAdmin', 'GET');
       if (!res) return;
 
-      const jadwal = document.getElementById('guru-jadwal').value;
-      let filterKelas = jadwal ? jadwal.split('|')[0] : '';
-      let filterMapel = jadwal ? jadwal.split('|')[1] : '';
+      const filterKelas = document.getElementById('guru-kelas').value;
+      const filterMapel = document.getElementById('guru-mapel').value;
 
       let list = res.filter(j => j.guru === currentUser.nama);
-      if (filterKelas && filterMapel) {
-        list = list.filter(j => j.kelas === filterKelas && j.mapel === filterMapel);
-      }
+      if (filterKelas) list = list.filter(j => j.kelas === filterKelas);
+      if (filterMapel) list = list.filter(j => j.mapel === filterMapel);
 
       tbody.innerHTML = '';
       if (list.length === 0) {
@@ -1168,11 +1190,10 @@
     }
 
     async function loadRekapGuru() {
-      const jadwal = document.getElementById('guru-jadwal').value;
-      if (!jadwal) return;
+      const kelas = document.getElementById('guru-kelas').value;
+      const mapel = document.getElementById('guru-mapel').value;
+      if (!kelas || !mapel) return;
 
-      const kelas = jadwal.split('|')[0];
-      const mapel = jadwal.split('|')[1];
       const thead = document.getElementById('thead-rekap-guru');
       const tbody = document.getElementById('tbody-rekap-guru');
 
@@ -1272,8 +1293,9 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       
-      const jadwal = document.getElementById('guru-jadwal').value;
-      const title = `REKAPITULASI ${activeInputType.toUpperCase()} - KELAS ${jadwal}`;
+      const kelas = document.getElementById('guru-kelas').value;
+      const mapel = document.getElementById('guru-mapel').value;
+      const title = `REKAPITULASI ${activeInputType.toUpperCase()} - KELAS ${kelas} (${mapel})`;
 
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
