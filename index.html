@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siaga Mengajar V1.0 - Sistem Informasi Akademik & Jurnal Mengajar</title>
+  <title>Siaga Mengajar - Sistem Informasi Akademik & Jurnal Mengajar</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -69,7 +69,7 @@
     <div id="view-landing" class="view-section active-view">
       <div class="text-center mb-12">
         <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Sistem Akademik Terpadu</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang di Siaga Mengajar</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang-di Siaga Mengajar</h1>
         <p class="text-slate-500 max-w-2xl mx-auto text-sm md:text-base">Portal Manajemen Akademik, Presensi, Nilai, dan Jurnal Harian Mengajar Guru. Silakan pilih portal akses Anda.</p>
       </div>
 
@@ -938,10 +938,7 @@
         uniqueKelas.forEach(k => { html += `<option value="${k}">${k}</option>`; });
         selKelas.innerHTML = html;
       } else {
-        const resKelas = await callAPI('getKelas', 'GET');
-        let html = '<option value="">-- Pilih Kelas --</option>';
-        (resKelas || []).forEach(k => { html += `<option value="${k}">${k}</option>`; });
-        selKelas.innerHTML = html;
+        selKelas.innerHTML = '<option value="">-- Anda Belum Memiliki Jadwal di Sheet Jadwal_Mengajar --</option>';
       }
     }
 
@@ -962,7 +959,7 @@
         let html = '<option value="">-- Pilih Mapel --</option>';
         (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
         selMapel.innerHTML = html;
-      } else if (teacherJadwalList.length > 0) {
+      } else {
         const filteredMapel = teacherJadwalList
           .filter(j => j.kelas === kelas)
           .map(j => j.mapel);
@@ -974,16 +971,8 @@
           uniqueMapel.forEach(m => { html += `<option value="${m}">${m}</option>`; });
           selMapel.innerHTML = html;
         } else {
-          const resMapel = await callAPI('getDaftarMapel', 'GET');
-          let html = '<option value="">-- Pilih Mapel --</option>';
-          (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
-          selMapel.innerHTML = html;
+          selMapel.innerHTML = '<option value="">-- Tidak ada mapel di jadwal Anda untuk kelas ini --</option>';
         }
-      } else {
-        const resMapel = await callAPI('getDaftarMapel', 'GET');
-        let html = '<option value="">-- Pilih Mapel --</option>';
-        (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
-        selMapel.innerHTML = html;
       }
 
       onGuruJadwalChange();
