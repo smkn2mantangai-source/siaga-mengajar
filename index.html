@@ -233,6 +233,7 @@
       </div>
     </div>
 
+    <!-- VIEW: GURU & ADMIN -->
     <div id="view-guru" class="view-section space-y-6">
       
       <!-- Welcome Banner for Admin -->
@@ -440,7 +441,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div>
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Pilih Kelas</label>
-              <select id="guru-kelas" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 cursor-pointer" onchange="onGuruJadwalChange()">
+              <select id="guru-kelas" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 cursor-pointer" onchange="onGuruKelasChange()">
                 <option value="">-- Pilih Kelas --</option>
               </select>
             </div>
@@ -606,6 +607,7 @@
     let currentRekapExportData = [];
     let tamuChartInstance = null;
     let currentTamuNilai = [];
+    let teacherJadwalList = [];
 
     window.onload = function() {
       loadKelasTamu();
@@ -919,29 +921,72 @@
       const selMapel = document.getElementById('guru-mapel');
       if (!selKelas || !selMapel) return;
 
-      if (selKelas.options.length <= 1) {
-        selKelas.innerHTML = '<option value="">-- Memuat Kelas... --</option>';
+      selKelas.innerHTML = '<option value="">-- Memuat Kelas... --</option>';
+      selMapel.innerHTML = '<option value="">-- Pilih Kelas Terlebih Dahulu --</option>';
+
+      const resJadwal = await callAPI('getJadwal', 'GET', { idGuru: currentUser ? currentUser.id : '', role: currentUser ? currentUser.role : '' });
+      teacherJadwalList = resJadwal || [];
+
+      if (currentUser && currentUser.role === 'Admin') {
         const resKelas = await callAPI('getKelas', 'GET');
-        if (resKelas && resKelas.length > 0) {
-          let html = '<option value="">-- Pilih Kelas --</option>';
-          resKelas.forEach(k => { html += `<option value="${k}">${k}</option>`; });
-          selKelas.innerHTML = html;
-        } else {
-          selKelas.innerHTML = '<option value="">-- Tidak Ada Kelas --</option>';
-        }
+        let html = '<option value="">-- Pilih Kelas --</option>';
+        (resKelas || []).forEach(k => { html += `<option value="${k}">${k}</option>`; });
+        selKelas.innerHTML = html;
+      } else if (teacherJadwalList.length > 0) {
+        const uniqueKelas = [...new Set(teacherJadwalList.map(j => j.kelas))].sort();
+        let html = '<option value="">-- Pilih Kelas --</option>';
+        uniqueKelas.forEach(k => { html += `<option value="${k}">${k}</option>`; });
+        selKelas.innerHTML = html;
+      } else {
+        const resKelas = await callAPI('getKelas', 'GET');
+        let html = '<option value="">-- Pilih Kelas --</option>';
+        (resKelas || []).forEach(k => { html += `<option value="${k}">${k}</option>`; });
+        selKelas.innerHTML = html;
+      }
+    }
+
+    async function onGuruKelasChange() {
+      const kelas = document.getElementById('guru-kelas').value;
+      const selMapel = document.getElementById('guru-mapel');
+
+      if (!kelas) {
+        selMapel.innerHTML = '<option value="">-- Pilih Kelas Terlebih Dahulu --</option>';
+        onGuruJadwalChange();
+        return;
       }
 
-      if (selMapel.options.length <= 1) {
-        selMapel.innerHTML = '<option value="">-- Memuat Mapel... --</option>';
+      selMapel.innerHTML = '<option value="">-- Memuat Mapel... --</option>';
+
+      if (currentUser && currentUser.role === 'Admin') {
         const resMapel = await callAPI('getDaftarMapel', 'GET');
-        if (resMapel && resMapel.length > 0) {
-          let html = '<option value="">-- Pilih Mata Pelajaran --</option>';
-          resMapel.forEach(m => { html += `<option value="${m}">${m}</option>`; });
+        let html = '<option value="">-- Pilih Mapel --</option>';
+        (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
+        selMapel.innerHTML = html;
+      } else if (teacherJadwalList.length > 0) {
+        const filteredMapel = teacherJadwalList
+          .filter(j => j.kelas === kelas)
+          .map(j => j.mapel);
+        
+        const uniqueMapel = [...new Set(filteredMapel)].sort();
+
+        if (uniqueMapel.length > 0) {
+          let html = '<option value="">-- Pilih Mapel --</option>';
+          uniqueMapel.forEach(m => { html += `<option value="${m}">${m}</option>`; });
           selMapel.innerHTML = html;
         } else {
-          selMapel.innerHTML = '<option value="">-- Tidak Ada Mapel --</option>';
+          const resMapel = await callAPI('getDaftarMapel', 'GET');
+          let html = '<option value="">-- Pilih Mapel --</option>';
+          (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
+          selMapel.innerHTML = html;
         }
+      } else {
+        const resMapel = await callAPI('getDaftarMapel', 'GET');
+        let html = '<option value="">-- Pilih Mapel --</option>';
+        (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
+        selMapel.innerHTML = html;
       }
+
+      onGuruJadwalChange();
     }
 
     function openPanel(type) {
@@ -1250,7 +1295,17 @@
           <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Siswa</th>`;
         
         jenisList.forEach(j => {
-          thHTML += `<th class="px-3 py-3 text-center font-bold text-indigo-600 uppercase bg-indigo-50/50">${j}</th>`;
+          let parts = j.split(' ');
+          let kat = parts[0] || 'TG';
+          let ke = parts[1] || '1';
+          thHTML += `<th class="px-3 py-2 text-center font-bold text-indigo-600 uppercase bg-indigo-50/50">
+            <div class="flex flex-col items-center gap-1">
+              <span>${j}</span>
+              <button onclick="editNilaiDariRekap('${kat}', '${ke}')" class="text-[10px] bg-indigo-100 hover:bg-indigo-600 hover:text-white text-indigo-700 px-2 py-0.5 rounded transition cursor-pointer font-normal" title="Edit & Resubmit Nilai ${j}">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+            </div>
+          </th>`;
         });
 
         thHTML += `<th class="px-4 py-3 text-center font-bold text-emerald-700 uppercase bg-emerald-50/50">Rata-Rata</th></tr>`;
@@ -1266,7 +1321,7 @@
           let tdScores = '';
           jenisList.forEach(j => {
             let val = s.scores && s.scores[j] !== undefined ? s.scores[j] : '-';
-            let cls = val === '-' ? 'text-slate-300 italic' : 'font-bold text-slate-800';
+            let cls = val === '-' ? 'text-slate-300' : 'font-bold text-slate-700';
             tdScores += `<td class="px-3 py-3 text-center ${cls}">${val}</td>`;
           });
 
@@ -1274,10 +1329,24 @@
             <td class="px-4 py-3 font-mono text-slate-500">${s.nis}</td>
             <td class="px-4 py-3 font-bold text-slate-800">${s.nama}</td>
             ${tdScores}
-            <td class="px-4 py-3 text-center font-black text-emerald-700 bg-emerald-50/50">${s.rataRata}</td>
+            <td class="px-4 py-3 text-center font-extrabold text-emerald-700 bg-emerald-50/40">${s.rataRata}</td>
           </tr>`;
         });
       }
+    }
+
+    function editNilaiDariRekap(kat, ke) {
+      document.getElementById('guru-jenis-tugas-kat').value = kat;
+      document.getElementById('guru-jenis-tugas-ke').value = ke;
+      switchGuruMode('input');
+      onGuruJadwalChange();
+      Swal.fire({
+        icon: 'info',
+        title: 'Mode Edit Penilaian',
+        text: `Form disesuaikan untuk ${kat} ke-${ke}. Nilai terdaftar telah dimuat. Silakan ubah data lalu klik 'Simpan Data Kelas' untuk menimpa data.`,
+        timer: 2500,
+        showConfirmButton: false
+      });
     }
 
     function exportRekapExcel() {
