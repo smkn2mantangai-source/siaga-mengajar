@@ -69,7 +69,7 @@
     <div id="view-landing" class="view-section active-view">
       <div class="text-center mb-12">
         <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Sistem Akademik Terpadu</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang -- di Siaga Mengajar</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang di Siaga Mengajar</h1>
         <p class="text-slate-500 max-w-2xl mx-auto text-sm md:text-base">Portal Manajemen Akademik, Presensi, Nilai, dan Jurnal Harian Mengajar Guru. Silakan pilih portal akses Anda.</p>
       </div>
 
@@ -530,6 +530,14 @@
           <!-- FORM SISWA AREA -->
           <div id="form-siswa-area" class="hidden space-y-6">
             <div id="subarea-input-mode">
+              <div id="info-reload-nilai" class="hidden mb-4 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-circle-info text-blue-600 text-sm"></i>
+                  <span id="text-reload-info" class="font-medium"></span>
+                </div>
+                <span id="badge-reload-count" class="bg-blue-200 text-blue-900 font-bold px-2.5 py-0.5 rounded-md text-[11px]"></span>
+              </div>
+
               <div class="overflow-x-auto border border-slate-200 rounded-xl mb-4">
                 <table class="min-w-full divide-y divide-slate-200 text-xs">
                   <thead class="bg-slate-50">
@@ -1065,9 +1073,36 @@
       const tbody = document.getElementById('tabel-input-siswa');
       tbody.innerHTML = '';
 
+      const infoBox = document.getElementById('info-reload-nilai');
+      const textInfo = document.getElementById('text-reload-info');
+      const badgeCount = document.getElementById('badge-reload-count');
+
       if (currentSiswaData.length === 0) {
         tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-6 text-center text-slate-400">Pilih Kelas dan Mata Pelajaran terlebih dahulu.</td></tr>';
+        if (infoBox) infoBox.classList.add('hidden');
         return;
+      }
+
+      if (activeInputType === 'nilai' && infoBox) {
+        let kat = document.getElementById('guru-jenis-tugas-kat').value;
+        let ke = document.getElementById('guru-jenis-tugas-ke').value;
+        let jenisTugas = `${kat} ${ke}`;
+        let loadedKeys = Object.keys(existingNilaiMap);
+
+        infoBox.classList.remove('hidden');
+        if (loadedKeys.length > 0) {
+          infoBox.className = "mb-4 p-3.5 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 flex items-center justify-between gap-2 shadow-sm";
+          textInfo.innerHTML = `<strong>Mode Edit / Update:</strong> Memuat data nilai terdaftar untuk <strong>${jenisTugas}</strong>. Silakan ubah angka lalu klik 'Simpan Data Kelas' untuk menimpa data lama.`;
+          badgeCount.innerText = `${loadedKeys.length} Nilai Terisi`;
+          badgeCount.className = "bg-indigo-200 text-indigo-900 font-bold px-2.5 py-0.5 rounded-md text-[11px]";
+        } else {
+          infoBox.className = "mb-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 flex items-center justify-between gap-2 shadow-sm";
+          textInfo.innerHTML = `Belum ada nilai terdaftar untuk <strong>${jenisTugas}</strong>. Silakan masukkan nilai baru.`;
+          badgeCount.innerText = `Data Baru`;
+          badgeCount.className = "bg-slate-200 text-slate-700 font-bold px-2.5 py-0.5 rounded-md text-[11px]";
+        }
+      } else if (infoBox) {
+        infoBox.classList.add('hidden');
       }
 
       currentSiswaData.forEach((s, idx) => {
@@ -1082,7 +1117,9 @@
             </select>`;
         } else if (activeInputType === 'nilai') {
           let val = existingNilaiMap[s.nis] !== undefined ? existingNilaiMap[s.nis] : 0;
-          inputField = `<input type="number" min="0" max="100" id="input_${idx}" value="${val}" placeholder="0" class="w-24 p-2 text-center border border-slate-200 rounded-lg text-xs bg-slate-50 font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-500 outline-none">`;
+          let isFilled = existingNilaiMap[s.nis] !== undefined;
+          let borderCls = isFilled ? 'border-indigo-300 bg-indigo-50/30' : 'border-slate-200 bg-slate-50';
+          inputField = `<input type="number" min="0" max="100" id="input_${idx}" value="${val}" placeholder="0" class="w-24 p-2 text-center border ${borderCls} rounded-lg text-xs font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-500 outline-none">`;
         }
 
         tbody.innerHTML += `
