@@ -69,7 +69,7 @@
     <div id="view-landing" class="view-section active-view">
       <div class="text-center mb-12">
         <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Sistem Akademik Terpadu</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang di Siaga Mengajar</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang-di Siaga Mengajar</h1>
         <p class="text-slate-500 max-w-2xl mx-auto text-sm md:text-base">Portal Manajemen Akademik, Presensi, Nilai, dan Jurnal Harian Mengajar Guru. Silakan pilih portal akses Anda.</p>
       </div>
 
@@ -287,9 +287,9 @@
         <div class="bg-purple-50 px-6 py-4 border-b border-purple-100 flex justify-between items-center flex-wrap gap-4">
           <div>
             <h2 class="text-lg font-bold text-purple-900 flex items-center gap-2">
-              <i class="fa-solid fa-book-open-reader text-purple-600"></i> Monitoring Jurnal Mengajar Seluruh Guru
+              <i class="fa-solid fa-book-open-reader text-purple-600"></i> Monitoring Jurnal & Kehadiran Kelas
             </h2>
-            <p class="text-xs text-purple-700 mt-0.5">Pantau keterlaksanaan materi dan kendala mengajar harian</p>
+            <p class="text-xs text-purple-700 mt-0.5">Pantau materi pembelajaran serta rekap kehadiran (hadir & siswa tidak hadir) secara otomatis</p>
           </div>
           <button onclick="document.getElementById('panel-supervisi-jurnal').classList.add('hidden')" class="text-slate-400 hover:text-red-500 transition-colors cursor-pointer">
             <i class="fa-solid fa-xmark text-2xl"></i>
@@ -304,7 +304,8 @@
                   <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Guru</th>
                   <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Kelas & Mapel</th>
                   <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Materi Diajarkan</th>
-                  <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Keterangan / Kendala</th>
+                  <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Rekap Kehadiran Siswa</th>
+                  <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Catatan / Kendala</th>
                 </tr>
               </thead>
               <tbody id="tabel-supervisi-jurnal" class="bg-white divide-y divide-slate-100"></tbody>
@@ -489,16 +490,20 @@
           <div id="form-jurnal-area" class="hidden space-y-6">
             <div class="bg-purple-50/50 p-6 rounded-2xl border border-purple-100 space-y-4">
               <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><i class="fa-solid fa-square-plus text-purple-600"></i> Tambah Catatan Jurnal Mengajar</h3>
+              <div class="p-3 bg-blue-50 border border-blue-100 rounded-xl text-xs text-blue-800 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Sistem akan otomatis merekap jumlah siswa hadir & nama siswa tidak hadir berdasarkan menu <b>Presensi Kelas</b> di tanggal yang dipilih.</span>
+              </div>
               <div>
                 <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pokok Materi Diajarkan</label>
                 <input type="text" id="jurnal-materi" placeholder="Contoh: Bab 3 Algoritma Pemrograman dasar" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none text-sm bg-white">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Keterangan / Kendala / Catatan Siswa</label>
+                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Keterangan / Kendala / Catatan Kelas</label>
                 <textarea id="jurnal-ket" placeholder="Ketik kendala siswa, suasana kelas, atau catatan khusus..." class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none text-sm bg-white" rows="3"></textarea>
               </div>
               <button onclick="submitJurnal()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition-all text-xs flex items-center gap-2 cursor-pointer">
-                <i class="fa-solid fa-floppy-disk"></i> Simpan Catatan Jurnal
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Catatan Jurnal & Sync Absensi
               </button>
             </div>
 
@@ -518,6 +523,7 @@
                       <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Tanggal</th>
                       <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Kelas & Mapel</th>
                       <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Materi</th>
+                      <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Rekap Kehadiran</th>
                       <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Keterangan</th>
                     </tr>
                   </thead>
@@ -1244,7 +1250,7 @@
 
     async function loadRiwayatJurnalGuru() {
       const tbody = document.getElementById('tabel-riwayat-jurnal');
-      tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-slate-400">Memuat riwayat jurnal...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-slate-400">Memuat riwayat jurnal...</td></tr>';
       
       const res = await callAPI('getJurnalAdmin', 'GET');
       if (!res) return;
@@ -1258,7 +1264,7 @@
 
       tbody.innerHTML = '';
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-slate-400">Belum ada riwayat catatan jurnal.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-slate-400">Belum ada riwayat catatan jurnal.</td></tr>';
         return;
       }
 
@@ -1268,6 +1274,7 @@
             <td class="px-4 py-3 font-semibold text-slate-600">${item.tanggal}</td>
             <td class="px-4 py-3 font-bold text-slate-800">${item.kelas} - ${item.mapel}</td>
             <td class="px-4 py-3 font-semibold text-purple-700">${item.materi}</td>
+            <td class="px-4 py-3 text-slate-700 font-medium"><span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-[11px]">${item.absenSummary || '-'}</span></td>
             <td class="px-4 py-3 text-slate-500">${item.keterangan || '-'}</td>
           </tr>`;
       });
@@ -1444,14 +1451,14 @@
 
     async function loadJurnalSupervisi() {
       const tbody = document.getElementById('tabel-supervisi-jurnal');
-      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-slate-400">Memuat jurnal mengajar...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">Memuat jurnal mengajar...</td></tr>';
 
       const res = await callAPI('getJurnalAdmin', 'GET');
       if (!res) return;
 
       tbody.innerHTML = '';
       if (res.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-slate-400">Belum ada riwayat jurnal.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">Belum ada riwayat jurnal.</td></tr>';
         return;
       }
 
@@ -1461,6 +1468,7 @@
           <td class="px-4 py-3 font-bold text-slate-800">${item.guru}</td>
           <td class="px-4 py-3 text-slate-600">${item.kelas} - ${item.mapel}</td>
           <td class="px-4 py-3 font-semibold text-purple-700">${item.materi}</td>
+          <td class="px-4 py-3 text-slate-700 font-medium"><span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-[11px]">${item.absenSummary || '-'}</span></td>
           <td class="px-4 py-3 text-slate-500">${item.keterangan || '-'}</td>
         </tr>`;
       });
