@@ -225,18 +225,83 @@
     <div id="view-guru" class="view-section">
       
       <!-- Welcome Banner for Admin -->
-      <div id="admin-banner" class="hidden mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-6 shadow-lg text-white flex justify-between items-center flex-wrap gap-4">
+      <div id="admin-banner" class="hidden mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 shadow-xl text-white flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 class="text-2xl font-bold mb-1">Selamat Datang, Bapak Kepala Sekolah</h2>
-          <p class="text-blue-100 text-sm">Anda memiliki akses rekapitulasi data dari seluruh guru dan kelas.</p>
-          <button onclick="downloadLegerAdmin()" class="mt-4 bg-white text-indigo-700 hover:bg-indigo-100 font-bold px-5 py-2.5 rounded-lg shadow-md transition-all text-sm flex items-center gap-2">
-            <i class="fa-solid fa-file-excel"></i> Download Leger Keseluruhan Sekolah
-          </button>
+          <span class="bg-blue-500/40 text-blue-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Akses Supervisi Kepala Sekolah</span>
+          <h2 class="text-2xl font-extrabold mt-2 mb-1">Selamat Datang, Bapak Ahmad Yulian</h2>
+          <p class="text-blue-100 text-sm">Silakan pilih menu supervisi di bawah ini untuk memantau rekapitulasi KBM dan nilai seluruh sekolah.</p>
         </div>
-        <i class="fa-solid fa-building-columns text-6xl opacity-20"></i>
+        <button onclick="downloadLegerAdmin()" class="bg-white text-indigo-700 hover:bg-indigo-50 font-bold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all text-sm flex items-center gap-2">
+          <i class="fa-solid fa-file-excel text-emerald-600 text-lg"></i> Download Leger Keseluruhan Sekolah
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- MENU SUPERVISI KEPALA SEKOLAH (Khusus Admin) -->
+      <div id="admin-supervisi-menu" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <button onclick="openSupervisiPanel('jurnal')" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl border border-slate-100 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 relative overflow-hidden text-center">
+          <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-book-open-reader"></i>
+          </div>
+          <h3 class="font-bold text-lg text-slate-800">Monitoring Jurnal Guru</h3>
+          <p class="text-xs text-slate-500 mt-1">Pantau materi & kendala harian guru</p>
+        </button>
+
+        <button onclick="openSupervisiPanel('nilai')" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl border border-slate-100 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 relative overflow-hidden text-center">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="font-bold text-lg text-slate-800">Rekap Nilai Per Kelas</h3>
+          <p class="text-xs text-slate-500 mt-1">Inspeksi capaian nilai per mapel & kelas</p>
+        </button>
+
+        <button onclick="openSupervisiPanel('absen')" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl border border-slate-100 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 relative overflow-hidden text-center">
+          <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-clipboard-user"></i>
+          </div>
+          <h3 class="font-bold text-lg text-slate-800">Rekap Presensi Siswa</h3>
+          <p class="text-xs text-slate-500 mt-1">Cek kehadiran siswa di setiap kelas</p>
+        </button>
+      </div>
+
+      <!-- PANEL SUPERVISI MONITORING JURNAL GURU (ADMIN) -->
+      <div id="panel-supervisi-jurnal" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden hidden mb-8">
+        <div class="bg-purple-50 px-6 py-4 border-b border-purple-100 flex justify-between items-center flex-wrap gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-purple-900 flex items-center gap-2">
+              <i class="fa-solid fa-book-open-reader text-purple-600"></i> Monitoring Jurnal Mengajar Guru
+            </h2>
+            <p class="text-xs text-purple-700 mt-0.5">Daftar rekaman materi dan laporan mengajar seluruh guru</p>
+          </div>
+          <button onclick="document.getElementById('panel-supervisi-jurnal').classList.add('hidden')" class="text-slate-400 hover:text-red-500 transition-colors">
+            <i class="fa-solid fa-xmark text-2xl"></i>
+          </button>
+        </div>
+        
+        <div class="p-6">
+          <div class="flex flex-wrap gap-4 mb-6">
+            <input type="text" id="filter-jurnal-search" placeholder="Cari nama guru / kelas / materi..." onkeyup="filterTabelJurnal()" class="p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 text-sm bg-slate-50 min-w-[280px]">
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="min-w-full divide-y divide-slate-200">
+              <thead class="bg-slate-50">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal</th>
+                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Guru Pengajar</th>
+                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Kelas / Mapel</th>
+                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Pokok Materi</th>
+                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Keterangan / Kendala</th>
+                </tr>
+              </thead>
+              <tbody id="tabel-supervisi-jurnal" class="bg-white divide-y divide-slate-100 text-sm">
+                <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Memuat data jurnal...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="menu-input-guru" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <button onclick="openPanel('absen')" class="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl border border-slate-100 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute inset-0 bg-blue-50 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
           <div class="relative z-10 text-center">
@@ -464,7 +529,6 @@
       const p = document.getElementById('password').value;
       if(!u || !p) return Swal.fire('Perhatian', 'Harap isi Username dan Password!', 'warning');
 
-      // Panggil API Login
       const res = await callAPI('login', 'POST', { username: u, password: p });
       if(!res) return;
 
@@ -476,8 +540,12 @@
         
         if(currentUser.role === 'Admin') {
           document.getElementById('admin-banner').classList.remove('hidden');
+          document.getElementById('admin-supervisi-menu').classList.remove('hidden');
+          document.getElementById('menu-input-guru').classList.add('hidden'); 
         } else {
           document.getElementById('admin-banner').classList.add('hidden');
+          document.getElementById('admin-supervisi-menu').classList.add('hidden');
+          document.getElementById('menu-input-guru').classList.remove('hidden'); 
         }
 
         setView('view-guru');
@@ -487,93 +555,48 @@
       }
     }
 
-    function logout() {
-      Swal.fire({
-        title: 'Keluar Sistem?',
-        text: "Anda akan mengakhiri sesi ini.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#4f46e5',
-        cancelButtonColor: '#ef4444',
-        confirmButtonText: 'Ya, Keluar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          currentUser = null;
-          document.getElementById('nav-menu').classList.add('hidden');
-          document.getElementById('username').value = '';
-          document.getElementById('password').value = '';
-          setView('view-landing');
-        }
-      })
+    // FUNGSI SUPERVISI KEPALA SEKOLAH
+    async function openSupervisiPanel(type) {
+      if (type === 'jurnal') {
+        document.getElementById('panel-supervisi-jurnal').classList.remove('hidden');
+        document.getElementById('panel-input').classList.add('hidden');
+        loadJurnalSupervisi();
+        setTimeout(() => {
+          document.getElementById('panel-supervisi-jurnal').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else {
+        document.getElementById('panel-supervisi-jurnal').classList.add('hidden');
+        openPanel(type); // Membuka panel inspeksi nilai/absen kelas
+      }
     }
 
-    // TAMU
-    async function loadKelasTamu() {
-      const res = await callAPI('getKelas', 'GET');
-      if(!res) return;
-      
-      const sel = document.getElementById('tamu-kelas');
-      let html = '<option value="">-- Pilih Kelas --</option>';
-      res.forEach(k => html += `<option value="${k}">${k}</option>`);
-      sel.innerHTML = html;
-    }
+    async function loadJurnalSupervisi() {
+      const res = await callAPI('getJurnalAdmin', 'GET');
+      const tbody = document.getElementById('tabel-supervisi-jurnal');
+      tbody.innerHTML = '';
 
-    async function loadSiswaTamu() {
-      const kls = document.getElementById('tamu-kelas').value;
-      const sel = document.getElementById('tamu-siswa');
-      if(!kls) {
-        sel.innerHTML = '<option value="">-- Pilih Kelas Terlebih Dahulu --</option>';
-        sel.disabled = true;
+      if (!res || res.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Belum ada catatan jurnal mengajar yang diisi.</td></tr>`;
         return;
       }
-      
-      const res = await callAPI('getSiswaTamu', 'GET', { kelas: kls });
-      if(!res) return;
 
-      let html = '<option value="">-- Pilih Nama Siswa --</option>';
-      res.forEach(s => html += `<option value="${s.nis}">${s.nis} - ${s.nama}</option>`);
-      sel.innerHTML = html;
-      sel.disabled = false;
-    }
-
-    async function cekNilaiTamu() {
-      const nis = document.getElementById('tamu-siswa').value;
-      const kelas = document.getElementById('tamu-kelas').value;
-      const selectObj = document.getElementById('tamu-siswa');
-      
-      if(!nis) return Swal.fire('Informasi', 'Silakan pilih siswa terlebih dahulu', 'info');
-      
-      const nama = selectObj.options[selectObj.selectedIndex].text.split(" - ")[1];
-
-      const res = await callAPI('getRekapTamu', 'GET', { nis: nis, kelas: kelas });
-      if(!res) return;
-
-      document.getElementById('nama-siswa-tamu').innerText = nama;
-      document.getElementById('kelas-siswa-tamu').innerText = "Kelas " + kelas;
-      setView('view-hasil-tamu');
-      
-      let tbody = document.getElementById('tabel-nilai-tamu');
-      tbody.innerHTML = '';
-      
-      if(res.nilaiMasuk.length === 0 && res.tugasKosong.length === 0) {
-         tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-500">Belum ada data nilai untuk siswa ini.</td></tr>`;
-         return;
-      }
-
-      res.nilaiMasuk.forEach(n => {
-        tbody.innerHTML += `<tr>
-          <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-700">${n.mapel}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-slate-600">${n.tugas}</td>
-          <td class="px-6 py-4 whitespace-nowrap"><span class="font-extrabold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">${n.nilai}</span></td>
+      res.reverse().forEach(j => {
+        tbody.innerHTML += `<tr class="hover:bg-purple-50/30 transition-colors">
+          <td class="px-4 py-3 whitespace-nowrap font-semibold text-slate-600">${j.tanggal}</td>
+          <td class="px-4 py-3 whitespace-nowrap font-bold text-purple-950">${j.guru}</td>
+          <td class="px-4 py-3 whitespace-nowrap"><span class="bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded-md">${j.kelas} - ${j.mapel}</span></td>
+          <td class="px-4 py-3 text-slate-800 font-medium">${j.materi}</td>
+          <td class="px-4 py-3 text-slate-500 italic">${j.keterangan || '-'}</td>
         </tr>`;
       });
-      
-      res.tugasKosong.forEach(n => {
-        tbody.innerHTML += `<tr class="bg-red-50/40">
-          <td class="px-6 py-4 whitespace-nowrap font-medium text-red-800">${n.mapel}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-red-800">${n.tugas}</td>
-          <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-red-600 bg-red-100 px-3 py-1 rounded-full text-xs">BELUM MENGERJAKAN</span></td>
-        </tr>`;
+    }
+
+    function filterTabelJurnal() {
+      const query = document.getElementById('filter-jurnal-search').value.toLowerCase();
+      const rows = document.querySelectorAll('#tabel-supervisi-jurnal tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
       });
     }
 
