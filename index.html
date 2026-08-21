@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siaga Mengajar - Sistem Informasi Akademik & Jurnal Mengajar V1.0</title>
+  <title>Siaga Mengajar - Sistem Informasi Akademik & Jurnal Mengajar</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -262,67 +262,130 @@
       </div>
 
       <!-- MENU SUPERVISI KEPALA SEKOLAH (Khusus Admin) -->
-      <div id="admin-supervisi-menu" class="hidden grid grid-cols-1 md:grid-cols-3 gap-5">
-        <button onclick="openSupervisiPanel('jurnal')" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
-          <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+      <div id="admin-supervisi-menu" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4">
+        <button onclick="openSupervisiPanel('jurnal')" class="group bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
+          <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-book-open-reader"></i>
           </div>
-          <h3 class="font-bold text-base text-slate-800">Monitoring Jurnal Guru</h3>
-          <p class="text-xs text-slate-500 mt-1">Pantau materi harian & kendala mengajar guru</p>
+          <h3 class="font-bold text-sm text-slate-800">Jurnal Mengajar</h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Monitoring materi & harian guru</p>
         </button>
 
-        <button onclick="openSupervisiPanel('nilai')" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
-          <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-chart-line"></i>
+        <button onclick="openSupervisiPanel('keaktifan')" class="group bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-user-clock"></i>
           </div>
-          <h3 class="font-bold text-base text-slate-800">Rekap Nilai Per Kelas</h3>
-          <p class="text-xs text-slate-500 mt-1">Inspeksi nilai tugas & ujian per kelas</p>
+          <h3 class="font-bold text-sm text-slate-800">Keaktifan Guru</h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Rekap tatap muka & entri nilai</p>
         </button>
 
-        <button onclick="openSupervisiPanel('absen')" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
-          <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+        <button onclick="openSupervisiPanel('leger-kelas')" class="group bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
+          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <h3 class="font-bold text-sm text-slate-800">Leger Nilai Kelas</h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Nilai Akhir berbobot per kelas</p>
+        </button>
+
+        <button onclick="openSupervisiPanel('absen')" class="group bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/80 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 text-center">
+          <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-clipboard-user"></i>
           </div>
-          <h3 class="font-bold text-base text-slate-800">Rekap Presensi Siswa</h3>
-          <p class="text-xs text-slate-500 mt-1">Pantau tingkat kehadiran seluruh kelas</p>
+          <h3 class="font-bold text-sm text-slate-800">Rekap Presensi</h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Tingkat kehadiran per kelas</p>
         </button>
       </div>
 
-      <!-- PANEL SUPERVISI JURNAL GURU (ADMIN) -->
-      <div id="panel-supervisi-jurnal" class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hidden">
-        <div class="bg-purple-50 px-6 py-4 border-b border-purple-100 flex justify-between items-center flex-wrap gap-4">
+      <!-- PANEL SUPERVISI KEAKTIFAN & PENILAIAN GURU (ADMIN) -->
+      <div id="panel-supervisi-keaktifan" class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hidden">
+        <div class="bg-amber-50 px-6 py-4 border-b border-amber-100 flex justify-between items-center flex-wrap gap-4">
           <div>
-            <h2 class="text-lg font-bold text-purple-900 flex items-center gap-2">
-              <i class="fa-solid fa-book-open-reader text-purple-600"></i> Monitoring Jurnal Mengajar Guru
+            <h2 class="text-lg font-bold text-amber-900 flex items-center gap-2">
+              <i class="fa-solid fa-user-check text-amber-600"></i> Rekapitulasi Keaktifan & Penilaian Guru
             </h2>
-            <p class="text-xs text-purple-700 mt-0.5">Rekaman pokok materi & catatan kelas seluruh guru</p>
+            <p class="text-xs text-amber-700 mt-0.5">Inspeksi keterlaksanaan jam mengajar dan pemenuhan input nilai guru</p>
           </div>
-          <button onclick="document.getElementById('panel-supervisi-jurnal').classList.add('hidden')" class="text-slate-400 hover:text-red-500 transition-colors">
+          <button onclick="document.getElementById('panel-supervisi-keaktifan').classList.add('hidden')" class="text-slate-400 hover:text-red-500 transition-colors">
             <i class="fa-solid fa-xmark text-2xl"></i>
           </button>
         </div>
         
-        <div class="p-6">
-          <div class="flex flex-wrap gap-4 mb-5">
-            <div class="relative flex-1 min-w-[240px]">
-              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-              <input type="text" id="filter-jurnal-search" placeholder="Cari nama guru, kelas, atau materi..." onkeyup="filterTabelJurnal()" class="w-full pl-9 p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 text-xs bg-slate-50">
+        <div class="p-6 space-y-8">
+          <!-- Tabel 1: Rekap Jam / Pertemuan Mengajar -->
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-chalkboard text-indigo-600"></i> Rekap Pertemuan Mengajar (Berdasarkan Jurnal)
+            </h3>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+              <table class="min-w-full divide-y divide-slate-200 text-xs">
+                <thead class="bg-slate-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Guru</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Mata Pelajaran</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Kelas</th>
+                    <th class="px-4 py-3 text-center font-bold text-indigo-600 uppercase">Total Pertemuan</th>
+                  </tr>
+                </thead>
+                <tbody id="tabel-rekap-mengajar-guru" class="bg-white divide-y divide-slate-100">
+                  <tr><td colspan="4" class="px-6 py-6 text-center text-slate-400">Memuat data...</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
+          <!-- Tabel 2: Rekap Aktivitas Penilaian Guru -->
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-emerald-600"></i> Rekap Entri Penilaian Guru
+            </h3>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+              <table class="min-w-full divide-y divide-slate-200 text-xs">
+                <thead class="bg-slate-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Guru</th>
+                    <th class="px-3 py-3 text-center font-bold text-blue-600 uppercase">Tugas (TG - 20%)</th>
+                    <th class="px-3 py-3 text-center font-bold text-amber-600 uppercase">Ulangan Harian (UH - 20%)</th>
+                    <th class="px-3 py-3 text-center font-bold text-purple-600 uppercase">Nilai Praktik (NP - 30%)</th>
+                    <th class="px-3 py-3 text-center font-bold text-rose-600 uppercase">Ulangan Semester (US - 30%)</th>
+                    <th class="px-4 py-3 text-center font-bold text-emerald-700 uppercase">Total Entri</th>
+                  </tr>
+                </thead>
+                <tbody id="tabel-rekap-penilaian-guru" class="bg-white divide-y divide-slate-100">
+                  <tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">Memuat data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL LEGER NILAI AKHIR KELAS (ADMIN) -->
+      <div id="panel-supervisi-leger-kelas" class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hidden">
+        <div class="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex justify-between items-center flex-wrap gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-emerald-900 flex items-center gap-2">
+              <i class="fa-solid fa-graduation-cap text-emerald-600"></i> Leger Nilai Akhir Siswa Per Kelas
+            </h2>
+            <p class="text-xs text-emerald-700 mt-0.5">Kalkulasi Otomatis Nilai Akhir (20% TG + 20% UH + 30% NP + 30% US)</p>
+          </div>
+          <button onclick="document.getElementById('panel-supervisi-leger-kelas').classList.add('hidden')" class="text-slate-400 hover:text-red-500 transition-colors">
+            <i class="fa-solid fa-xmark text-2xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <div class="max-w-xs mb-6">
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pilih Kelas</label>
+            <select id="supervisi-select-kelas" class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-xs bg-slate-50 cursor-pointer" onchange="loadLegerKelasWeighted()">
+              <option value="">-- Pilih Kelas --</option>
+            </select>
+          </div>
+
           <div class="overflow-x-auto border border-slate-200 rounded-xl">
-            <table class="min-w-full divide-y divide-slate-200">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Tanggal</th>
-                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Guru Pengajar</th>
-                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Kelas / Mapel</th>
-                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Pokok Materi</th>
-                  <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Keterangan / Catatan</th>
-                </tr>
-              </thead>
-              <tbody id="tabel-supervisi-jurnal" class="bg-white divide-y divide-slate-100 text-xs">
-                <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Memuat data jurnal...</td></tr>
+            <table class="min-w-full divide-y divide-slate-200 text-xs">
+              <thead id="thead-supervisi-leger" class="bg-slate-50"></thead>
+              <tbody id="tbody-supervisi-leger" class="bg-white divide-y divide-slate-100">
+                <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Pilih kelas di atas untuk menampilkan Leger.</td></tr>
               </tbody>
             </table>
           </div>
@@ -421,104 +484,27 @@
                   <i class="fa-solid fa-clock-rotate-left text-purple-600"></i> Riwayat Jurnal Saya
                 </h3>
                 <button onclick="loadRiwayatJurnalGuru()" class="text-xs bg-purple-100 text-purple-800 font-bold px-3 py-1.5 rounded-lg hover:bg-purple-200 transition">
-                  <i class="fa-solid fa-rotate-right"></i> Refresh
-                </button>
-              </div>
-              <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                <table class="min-w-full divide-y divide-slate-200 text-xs">
-                  <thead class="bg-slate-50">
-                    <tr>
-                      <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Tanggal</th>
-                      <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Kelas / Mapel</th>
-                      <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Materi Diajarkan</th>
-                      <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Catatan</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tabel-jurnal-saya" class="bg-white divide-y divide-slate-100">
-                    <tr><td colspan="4" class="px-6 py-6 text-center text-slate-400">Pilih kelas di atas untuk melihat riwayat jurnal.</td></tr>
-                  </tbody>
-                </table>
+            <!-- Form Input Jenis Penilaian (Updated Dropdowns) -->
+            <div id="wrapper-jenis-tugas" class="hidden">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Jenis Penilaian & Ke-</label>
+              <div class="grid grid-cols-2 gap-2">
+                <select id="guru-jenis-tugas-kat" class="p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs bg-slate-50 font-semibold cursor-pointer">
+                  <option value="TG">TG - Tugas (20%)</option>
+                  <option value="UH">UH - Ulangan Harian (20%)</option>
+                  <option value="NP">NP - Nilai Praktik (30%)</option>
+                  <option value="US">US - Ulangan Semester (30%)</option>
+                </select>
+                <select id="guru-jenis-tugas-ke" class="p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs bg-slate-50 font-bold text-center cursor-pointer">
+                  <option value="1">Ke- 1</option>
+                  <option value="2">Ke- 2</option>
+                  <option value="3">Ke- 3</option>
+                  <option value="4">Ke- 4</option>
+                  <option value="5">Ke- 5</option>
+                </select>
               </div>
             </div>
           </div>
-
-          <!-- FORM SISWA (INPUT ABSEN / NILAI) -->
-          <div id="form-siswa-area" class="hidden">
-            <div class="overflow-x-auto border border-slate-200 rounded-xl mb-6">
-              <table class="min-w-full divide-y divide-slate-200">
-                <thead class="bg-slate-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-28">NIS</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap Siswa</th>
-                    <th id="th-input-type" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-52">Input</th>
-                  </tr>
-                </thead>
-                <tbody id="tabel-input-siswa" class="bg-white divide-y divide-slate-100 text-sm"></tbody>
-              </table>
-            </div>
-            
-            <div class="flex flex-wrap gap-3">
-              <button onclick="submitDataSiswa()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl shadow transition flex items-center gap-2 text-xs">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Data Ke Server
-              </button>
-              <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2 text-xs">
-                <i class="fa-solid fa-file-excel"></i> Export Excel
-              </button>
-              <button onclick="exportToPDF()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2 text-xs">
-                <i class="fa-solid fa-file-pdf"></i> Cetak PDF
-              </button>
-            </div>
-          </div>
-
-          <!-- REKAP KELAS AREA -->
-          <div id="view-rekap-kelas-area" class="hidden">
-            <!-- Filter Tanggal Absen (Tampil Jika Absen) -->
-            <div id="wrapper-filter-rekap-absen" class="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
-              <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Tanggal Mulai</label>
-                <input type="date" id="rekap-absen-start" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-white focus:ring-2 focus:ring-blue-500 outline-none" onchange="loadRekapKelas()">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Tanggal Selesai</label>
-                <input type="date" id="rekap-absen-end" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-white focus:ring-2 focus:ring-blue-500 outline-none" onchange="loadRekapKelas()">
-              </div>
-              <div class="flex items-end">
-                <button onclick="resetFilterRekapAbsen()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1">
-                  <i class="fa-solid fa-rotate-left"></i> Reset Filter Tanggal
-                </button>
-              </div>
-            </div>
-
-            <div class="mb-4 flex justify-between items-center flex-wrap gap-3">
-              <p class="text-xs font-semibold text-slate-600" id="rekap-kelas-subtitle">Rekapitulasi data tersimpan untuk kelas yang dipilih.</p>
-              <button onclick="exportRekapKelasExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5">
-                <i class="fa-solid fa-file-excel"></i> Export Excel Rekap
-              </button>
-            </div>
-            <div class="overflow-x-auto border border-slate-200 rounded-xl">
-              <table class="min-w-full divide-y divide-slate-200 text-xs">
-                <thead id="thead-rekap-kelas" class="bg-slate-50"></thead>
-                <tbody id="tbody-rekap-kelas" class="bg-white divide-y divide-slate-100"></tbody>
-              </table>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-      <p class="text-slate-500 font-bold text-xs mb-1">Sistem Informasi Siaga Mengajar &copy; 2026</p>
-      <p class="text-[11px] text-slate-400">Mengetahui Kepala Sekolah, <strong class="text-slate-600">Bapak Ahmad Yulian</strong></p>
-    </div>
-  </footer>
-
-  <!-- SCRIPT LOGIC -->
-  <script>
+<script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGIek0CEDYY-p9Fd_Nw9uknzh0gZfz3jFVbmJr135bNCA7dcAcjG3GKLYtNlekHMjj/exec'; 
     
     let currentUser = null;
@@ -836,355 +822,123 @@
     }
 
     async function openSupervisiPanel(type) {
+      document.getElementById('panel-supervisi-jurnal').classList.add('hidden');
+      document.getElementById('panel-supervisi-keaktifan').classList.add('hidden');
+      document.getElementById('panel-supervisi-leger-kelas').classList.add('hidden');
+      document.getElementById('panel-input').classList.add('hidden');
+
       if (type === 'jurnal') {
         document.getElementById('panel-supervisi-jurnal').classList.remove('hidden');
-        document.getElementById('panel-input').classList.add('hidden');
         loadJurnalSupervisi();
-        setTimeout(() => {
-          document.getElementById('panel-supervisi-jurnal').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+      } else if (type === 'keaktifan') {
+        document.getElementById('panel-supervisi-keaktifan').classList.remove('hidden');
+        loadSupervisiKeaktifan();
+      } else if (type === 'leger-kelas') {
+        document.getElementById('panel-supervisi-leger-kelas').classList.remove('hidden');
+        loadSelectKelasSupervisi();
       } else {
-        document.getElementById('panel-supervisi-jurnal').classList.add('hidden');
         openPanel(type);
       }
     }
 
-    async function loadJurnalSupervisi() {
-      const res = await callAPI('getJurnalAdmin', 'GET');
-      const tbody = document.getElementById('tabel-supervisi-jurnal');
-      tbody.innerHTML = '';
+    async function loadSupervisiKeaktifan() {
+      const res = await callAPI('getRekapKeaktifanGuru', 'GET');
+      if (!res) return;
 
-      if (!res || res.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Belum ada catatan jurnal mengajar.</td></tr>`;
-        return;
-      }
-
-      res.slice().reverse().forEach(j => {
-        tbody.innerHTML += `<tr class="hover:bg-purple-50/30 transition-colors">
-          <td class="px-4 py-3 whitespace-nowrap font-semibold text-slate-600">${j.tanggal}</td>
-          <td class="px-4 py-3 whitespace-nowrap font-bold text-purple-950">${j.guru}</td>
-          <td class="px-4 py-3 whitespace-nowrap"><span class="bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded-md">${j.kelas} - ${j.mapel}</span></td>
-          <td class="px-4 py-3 text-slate-800 font-medium">${j.materi}</td>
-          <td class="px-4 py-3 text-slate-500 italic">${j.keterangan || '-'}</td>
-        </tr>`;
-      });
-    }
-
-    function filterTabelJurnal() {
-      const query = document.getElementById('filter-jurnal-search').value.toLowerCase();
-      const rows = document.querySelectorAll('#tabel-supervisi-jurnal tr');
-      rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-      });
-    }
-
-    async function loadJadwalGuru() {
-      const res = await callAPI('getJadwal', 'GET', { idGuru: currentUser.id, role: currentUser.role });
-      if(!res) return;
-
-      const sel = document.getElementById('guru-jadwal');
-      let html = '<option value="">-- Pilih Kelas & Mapel --</option>';
-      res.forEach(j => {
-        html += `<option value="${j.kelas}|${j.mapel}">${j.kelas} - ${j.mapel}</option>`;
-      });
-      sel.innerHTML = html;
-    }
-
-    function openPanel(type) {
-      activeInputType = type;
-      currentGuruMode = 'input';
-      
-      document.getElementById('panel-input').classList.remove('hidden');
-      document.getElementById('form-siswa-area').classList.add('hidden');
-      document.getElementById('form-jurnal-area').classList.add('hidden');
-      document.getElementById('wrapper-jenis-tugas').classList.add('hidden');
-      document.getElementById('view-rekap-kelas-area').classList.add('hidden');
-      document.getElementById('tabel-input-siswa').innerHTML = '';
-      
-      let title = type === 'absen' ? '<i class="fa-solid fa-user-check text-blue-500 mr-2"></i> Kelola Presensi Siswa' : 
-                  type === 'nilai' ? '<i class="fa-solid fa-star text-emerald-500 mr-2"></i> Kelola Nilai Siswa' : 
-                  '<i class="fa-solid fa-book-open text-purple-500 mr-2"></i> Jurnal Mengajar Harian';
-                  
-      document.getElementById('panel-title').innerHTML = title;
-      document.getElementById('guru-tanggal').valueAsDate = new Date();
-      document.getElementById('guru-jadwal').value = "";
-
-      if(type === 'jurnal') {
-        document.getElementById('wrapper-tab-mode').classList.add('hidden');
-        document.getElementById('form-jurnal-area').classList.remove('hidden');
+      // Render Tabel Pertemuan Mengajar
+      const tbMengajar = document.getElementById('tabel-rekap-mengajar-guru');
+      tbMengajar.innerHTML = '';
+      if (!res.rekapMengajar || res.rekapMengajar.length === 0) {
+        tbMengajar.innerHTML = `<tr><td colspan="4" class="px-6 py-6 text-center text-slate-400">Belum ada riwayat mengajar.</td></tr>`;
       } else {
-        document.getElementById('wrapper-tab-mode').classList.remove('hidden');
-        switchGuruMode('input');
-        
-        document.getElementById('th-input-type').innerText = type === 'absen' ? 'Status Kehadiran' : 'Nilai (0-100)';
-        if(type === 'nilai') document.getElementById('wrapper-jenis-tugas').classList.remove('hidden');
-      }
-      
-      setTimeout(() => {
-        document.getElementById('panel-input').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-
-    function switchGuruMode(mode) {
-      currentGuruMode = mode;
-      const btnInput = document.getElementById('btn-mode-input');
-      const btnRekap = document.getElementById('btn-mode-rekap');
-
-      if (mode === 'input') {
-        btnInput.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors flex items-center gap-2";
-        btnRekap.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2";
-        document.getElementById('view-rekap-kelas-area').classList.add('hidden');
-        if (document.getElementById('guru-jadwal').value) {
-          document.getElementById('form-siswa-area').classList.remove('hidden');
-        }
-      } else {
-        btnRekap.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors flex items-center gap-2";
-        btnInput.className = "py-2.5 px-5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2";
-        document.getElementById('form-siswa-area').classList.add('hidden');
-        document.getElementById('view-rekap-kelas-area').classList.remove('hidden');
-        loadRekapKelas();
-      }
-    }
-
-    function onGuruJadwalChange() {
-      const jadwal = document.getElementById('guru-jadwal').value;
-      if (!jadwal) {
-        document.getElementById('form-siswa-area').classList.add('hidden');
-        document.getElementById('view-rekap-kelas-area').classList.add('hidden');
-        return;
-      }
-
-      if (activeInputType === 'jurnal') {
-        loadRiwayatJurnalGuru();
-      } else if (currentGuruMode === 'input') {
-        loadFormSiswa();
-      } else {
-        loadRekapKelas();
-      }
-    }
-
-    async function loadFormSiswa() {
-      const jadwal = document.getElementById('guru-jadwal').value;
-      if(!jadwal) return;
-      
-      const kelas = jadwal.split('|')[0];
-      const res = await callAPI('getSiswaInput', 'GET', { kelas: kelas });
-      if(!res) return;
-
-      currentSiswaData = res;
-      document.getElementById('form-siswa-area').classList.remove('hidden');
-      let tbody = document.getElementById('tabel-input-siswa');
-      tbody.innerHTML = '';
-      
-      if(res.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Belum ada data siswa di kelas ini.</td></tr>`;
-          return;
-      }
-
-      res.forEach((s, idx) => {
-        let inputHTML = '';
-        if(activeInputType === 'absen') {
-          inputHTML = `
-            <select id="input_${idx}" class="p-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full max-w-[150px] font-semibold text-xs text-slate-700 bg-slate-50 cursor-pointer">
-              <option value="Hadir" class="text-green-600">Hadir</option>
-              <option value="Sakit" class="text-yellow-600">Sakit</option>
-              <option value="Izin" class="text-blue-600">Izin</option>
-              <option value="Alpa" class="text-red-600">Alpa</option>
-            </select>`;
-        } else {
-          inputHTML = `<input type="number" id="input_${idx}" class="p-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none w-28 text-center font-bold text-xs text-slate-700 bg-slate-50" placeholder="0">`;
-        }
-        
-        tbody.innerHTML += `<tr class="hover:bg-slate-50/50 transition-colors">
-          <td class="px-6 py-3 whitespace-nowrap text-xs text-slate-500 font-mono">${s.nis}</td>
-          <td class="px-6 py-3 whitespace-nowrap font-bold text-xs text-slate-700">${s.nama}</td>
-          <td class="px-6 py-3 whitespace-nowrap">${inputHTML}</td>
-        </tr>`;
-      });
-    }
-
-    async function loadRiwayatJurnalGuru() {
-      const res = await callAPI('getJurnalAdmin', 'GET');
-      const tbody = document.getElementById('tabel-jurnal-saya');
-      tbody.innerHTML = '';
-
-      if (!res || res.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-6 text-center text-slate-400">Belum ada riwayat jurnal.</td></tr>`;
-        return;
-      }
-
-      const myJurnal = res.filter(j => j.guru === currentUser.nama);
-
-      if (myJurnal.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-6 text-center text-slate-400">Anda belum pernah mengisi jurnal mengajar.</td></tr>`;
-        return;
-      }
-
-      myJurnal.slice().reverse().forEach(j => {
-        tbody.innerHTML += `<tr class="hover:bg-purple-50/20 transition-colors">
-          <td class="px-4 py-3 whitespace-nowrap font-semibold text-slate-600">${j.tanggal}</td>
-          <td class="px-4 py-3 whitespace-nowrap"><span class="bg-purple-100 text-purple-800 text-[11px] font-bold px-2 py-0.5 rounded">${j.kelas} - ${j.mapel}</span></td>
-          <td class="px-4 py-3 text-slate-800 font-medium">${j.materi}</td>
-          <td class="px-4 py-3 text-slate-500 italic">${j.keterangan || '-'}</td>
-        </tr>`;
-      });
-    }
-
-    async function loadRekapKelas() {
-      const jadwal = document.getElementById('guru-jadwal').value;
-      if (!jadwal) return;
-
-      const kelas = jadwal.split('|')[0];
-      const mapel = jadwal.split('|')[1];
-
-      const wrapperAbsenFilter = document.getElementById('wrapper-filter-rekap-absen');
-      const thead = document.getElementById('thead-rekap-kelas');
-      const tbody = document.getElementById('tbody-rekap-kelas');
-
-      if (activeInputType === 'absen') {
-        wrapperAbsenFilter.classList.remove('hidden');
-        document.getElementById('rekap-kelas-subtitle').innerText = `Rekapitulasi Presensi Kehadiran | Kelas: ${kelas} | Mapel: ${mapel}`;
-
-        const startDate = document.getElementById('rekap-absen-start').value;
-        const endDate = document.getElementById('rekap-absen-end').value;
-
-        const res = await callAPI('getRekapAbsen', 'GET', { kelas: kelas, mapel: mapel, startDate: startDate, endDate: endDate });
-        if (!res) return;
-
-        thead.innerHTML = `<tr>
-          <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">NIS</th>
-          <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Siswa</th>
-          <th class="px-3 py-3 text-center font-bold text-emerald-600 uppercase">Hadir (H)</th>
-          <th class="px-3 py-3 text-center font-bold text-amber-600 uppercase">Sakit (S)</th>
-          <th class="px-3 py-3 text-center font-bold text-blue-600 uppercase">Izin (I)</th>
-          <th class="px-3 py-3 text-center font-bold text-rose-600 uppercase">Alpa (A)</th>
-          <th class="px-3 py-3 text-center font-bold text-slate-600 uppercase">Total</th>
-          <th class="px-4 py-3 text-center font-bold text-indigo-700 uppercase">% Kehadiran</th>
-        </tr>`;
-
-        tbody.innerHTML = '';
-        currentRekapExportData = [["NIS", "Nama Siswa", "Hadir (H)", "Sakit (S)", "Izin (I)", "Alpa (A)", "Total Pertemuan", "Persentase Kehadiran"]];
-
-        if (!res.siswa || res.siswa.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-6 text-center text-slate-400">Belum ada data presensi untuk periode/kelas ini.</td></tr>`;
-          return;
-        }
-
-        res.siswa.forEach(s => {
-          currentRekapExportData.push([s.nis, s.nama, s.H, s.S, s.I, s.A, s.total, s.persen]);
-          tbody.innerHTML += `<tr class="hover:bg-slate-50 transition-colors">
-            <td class="px-4 py-3 font-mono text-slate-500">${s.nis}</td>
-            <td class="px-4 py-3 font-bold text-slate-800">${s.nama}</td>
-            <td class="px-3 py-3 text-center font-bold text-emerald-600 bg-emerald-50/50">${s.H}</td>
-            <td class="px-3 py-3 text-center font-bold text-amber-600 bg-amber-50/50">${s.S}</td>
-            <td class="px-3 py-3 text-center font-bold text-blue-600 bg-blue-50/50">${s.I}</td>
-            <td class="px-3 py-3 text-center font-bold text-rose-600 bg-rose-50/50">${s.A}</td>
-            <td class="px-3 py-3 text-center font-bold text-slate-700">${s.total}</td>
-            <td class="px-4 py-3 text-center font-extrabold text-indigo-700 bg-indigo-50/60">${s.persen}</td>
+        res.rekapMengajar.forEach(m => {
+          tbMengajar.innerHTML += `<tr class="hover:bg-slate-50">
+            <td class="px-4 py-3 font-bold text-slate-800">${m.guru}</td>
+            <td class="px-4 py-3 text-slate-600">${m.mapel}</td>
+            <td class="px-4 py-3"><span class="bg-indigo-100 text-indigo-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md">${m.kelas}</span></td>
+            <td class="px-4 py-3 text-center font-extrabold text-indigo-700 bg-indigo-50/50">${m.jumlahPertemuan} Kali</td>
           </tr>`;
         });
+      }
 
+      // Render Tabel Penilaian Guru
+      const tbPenilaian = document.getElementById('tabel-rekap-penilaian-guru');
+      tbPenilaian.innerHTML = '';
+      if (!res.rekapPenilaian || res.rekapPenilaian.length === 0) {
+        tbPenilaian.innerHTML = `<tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">Belum ada aktivitas penilaian.</td></tr>`;
       } else {
-        // Rekap Nilai Matrix per Jenis Tugas / Ujian
-        wrapperAbsenFilter.classList.add('hidden');
-        document.getElementById('rekap-kelas-subtitle').innerText = `Rekapitulasi Nilai Tugas/Ujian | Kelas: ${kelas} | Mapel: ${mapel}`;
-
-        const res = await callAPI('getRekapNilai', 'GET', { kelas: kelas, mapel: mapel });
-        if (!res) return;
-
-        const jenisList = res.jenisTugasList || [];
-        const siswaList = res.rekapSiswa || [];
-
-        let thHTML = `<tr>
-          <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">NIS</th>
-          <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Siswa</th>`;
-        
-        let excelHeader = ["NIS", "Nama Siswa"];
-        jenisList.forEach(jt => {
-          thHTML += `<th class="px-3 py-3 text-center font-bold text-emerald-700 uppercase bg-emerald-50/80 border-x border-slate-200">${jt}</th>`;
-          excelHeader.push(jt);
-        });
-
-        thHTML += `<th class="px-4 py-3 text-center font-bold text-indigo-800 uppercase bg-indigo-100/70">Rata-Rata</th></tr>`;
-        excelHeader.push("Rata-Rata");
-
-        thead.innerHTML = thHTML;
-        tbody.innerHTML = '';
-        currentRekapExportData = [excelHeader];
-
-        if (siswaList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="${2 + jenisList.length + 1}" class="px-6 py-6 text-center text-slate-400">Belum ada data nilai di kelas ini.</td></tr>`;
-          return;
-        }
-
-        siswaList.forEach(s => {
-          let rowExcel = [s.nis, s.nama];
-          let tdScoresHTML = '';
-
-          jenisList.forEach(jt => {
-            let val = s.scores && s.scores[jt] !== undefined ? s.scores[jt] : '-';
-            rowExcel.push(val);
-            let valClass = val === '-' ? 'text-slate-300 italic' : 'font-bold text-emerald-700';
-            tdScoresHTML += `<td class="px-3 py-3 text-center ${valClass} border-x border-slate-100">${val}</td>`;
-          });
-
-          rowExcel.push(s.rataRata);
-          currentRekapExportData.push(rowExcel);
-
-          tbody.innerHTML += `<tr class="hover:bg-slate-50 transition-colors">
-            <td class="px-4 py-3 font-mono text-slate-500">${s.nis}</td>
-            <td class="px-4 py-3 font-bold text-slate-800">${s.nama}</td>
-            ${tdScoresHTML}
-            <td class="px-4 py-3 text-center font-black text-indigo-800 bg-indigo-50/50">${s.rataRata}</td>
+        res.rekapPenilaian.forEach(p => {
+          tbPenilaian.innerHTML += `<tr class="hover:bg-slate-50">
+            <td class="px-4 py-3 font-bold text-slate-800">${p.guru}</td>
+            <td class="px-3 py-3 text-center font-bold text-blue-600 bg-blue-50/40">${p.TG}</td>
+            <td class="px-3 py-3 text-center font-bold text-amber-600 bg-amber-50/40">${p.UH}</td>
+            <td class="px-3 py-3 text-center font-bold text-purple-600 bg-purple-50/40">${p.NP}</td>
+            <td class="px-3 py-3 text-center font-bold text-rose-600 bg-rose-50/40">${p.US}</td>
+            <td class="px-4 py-3 text-center font-black text-emerald-700 bg-emerald-50/60">${p.total}</td>
           </tr>`;
         });
       }
     }
 
-    function resetFilterRekapAbsen() {
-      document.getElementById('rekap-absen-start').value = '';
-      document.getElementById('rekap-absen-end').value = '';
-      loadRekapKelas();
-    }
-
-    function exportRekapKelasExcel() {
-      if (!currentRekapExportData || currentRekapExportData.length <= 1) {
-        return Swal.fire('Perhatian', 'Tidak ada data rekap untuk diexport!', 'warning');
+    async function loadSelectKelasSupervisi() {
+      const sel = document.getElementById('supervisi-select-kelas');
+      sel.innerHTML = '<option value="">-- Memuat Kelas... --</option>';
+      const res = await callAPI('getKelas', 'GET');
+      if (res && res.length > 0) {
+        let html = '<option value="">-- Pilih Kelas --</option>';
+        res.forEach(k => { html += `<option value="${k}">${k}</option>`; });
+        sel.innerHTML = html;
       }
-      const jadwal = document.getElementById('guru-jadwal').value;
-      const ws = XLSX.utils.aoa_to_sheet(currentRekapExportData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Rekap");
-      XLSX.writeFile(wb, `Rekap_${activeInputType}_${jadwal.replace('|','_')}.xlsx`);
     }
 
-    async function submitJurnal() {
-      const jadwal = document.getElementById('guru-jadwal').value;
-      if(!jadwal) return Swal.fire('Perhatian', 'Pilih kelas dan mata pelajaran terlebih dahulu!', 'warning');
+    async function loadLegerKelasWeighted() {
+      const kelas = document.getElementById('supervisi-select-kelas').value;
+      if (!kelas) return;
+
+      const thead = document.getElementById('thead-supervisi-leger');
+      const tbody = document.getElementById('tbody-supervisi-leger');
+
+      const res = await callAPI('getLegerKelasWeighted', 'GET', { kelas: kelas });
+      if (!res) return;
+
+      const mapelList = res.mapelList || [];
+      const legerSiswa = res.legerSiswa || [];
+
+      let thHTML = `<tr>
+        <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">NIS</th>
+        <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Nama Siswa</th>`;
       
-      const payload = {
-        tanggal: document.getElementById('guru-tanggal').value,
-        idGuru: currentUser.id,
-        kelas: jadwal.split('|')[0],
-        mapel: jadwal.split('|')[1],
-        materi: document.getElementById('jurnal-materi').value,
-        keterangan: document.getElementById('jurnal-ket').value
-      };
+      mapelList.forEach(m => {
+        thHTML += `<th class="px-3 py-3 text-center font-bold text-emerald-800 uppercase bg-emerald-50/80 border-x border-slate-200">${m}</th>`;
+      });
 
-      if(!payload.materi) return Swal.fire('Perhatian', 'Pokok materi harus diisi!', 'warning');
+      thHTML += `<th class="px-3 py-3 text-center font-bold text-slate-700 uppercase bg-slate-100">Total</th>
+        <th class="px-4 py-3 text-center font-bold text-indigo-800 uppercase bg-indigo-100/70">Rata-Rata</th></tr>`;
 
-      const res = await callAPI('simpanJurnal', 'POST', payload);
-      if(!res) return;
+      thead.innerHTML = thHTML;
+      tbody.innerHTML = '';
 
-      if(res.success) {
-         Swal.fire('Berhasil', res.message, 'success');
-         document.getElementById('jurnal-materi').value = '';
-         document.getElementById('jurnal-ket').value = '';
-         loadRiwayatJurnalGuru();
-      } else {
-         Swal.fire('Gagal', res.message, 'error');
+      if (legerSiswa.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${2 + mapelList.length + 2}" class="px-6 py-6 text-center text-slate-400">Belum ada data nilai di kelas ini.</td></tr>`;
+        return;
       }
+
+      legerSiswa.forEach(s => {
+        let tdScoresHTML = '';
+        mapelList.forEach(m => {
+          let score = s.mapelScores && s.mapelScores[m] !== undefined ? s.mapelScores[m] : '-';
+          let cls = score === '-' ? 'text-slate-300 italic' : 'font-bold text-emerald-700';
+          tdScoresHTML += `<td class="px-3 py-3 text-center ${cls} border-x border-slate-100">${score}</td>`;
+        });
+
+        tbody.innerHTML += `<tr class="hover:bg-slate-50 transition-colors">
+          <td class="px-4 py-3 font-mono text-slate-500">${s.nis}</td>
+          <td class="px-4 py-3 font-bold text-slate-800">${s.nama}</td>
+          ${tdScoresHTML}
+          <td class="px-3 py-3 text-center font-bold text-slate-700 bg-slate-50/60">${s.totalNilai}</td>
+          <td class="px-4 py-3 text-center font-black text-indigo-800 bg-indigo-50/50">${s.rataRata}</td>
+        </tr>`;
+      });
     }
 
     async function submitDataSiswa() {
@@ -1201,8 +955,9 @@
       };
 
       if(activeInputType === 'nilai') {
-        payload.jenisTugas = document.getElementById('guru-jenis-tugas').value.trim();
-        if(!payload.jenisTugas) return Swal.fire('Perhatian', 'Harap isi Jenis Tugas (Misal: UH 1, PR 2)!', 'warning');
+        let kat = document.getElementById('guru-jenis-tugas-kat').value;
+        let ke = document.getElementById('guru-jenis-tugas-ke').value;
+        payload.jenisTugas = `${kat} ${ke}`;
       }
 
       currentSiswaData.forEach((s, idx) => {
@@ -1221,103 +976,4 @@
         Swal.fire('Gagal', res.message, 'error');
       }
     }
-
-    function getExportData() {
-      let data = [["NIS", "Nama Lengkap", (activeInputType === 'absen' ? "Status Kehadiran" : "Nilai")]];
-      currentSiswaData.forEach((s, idx) => {
-        data.push([s.nis, s.nama, document.getElementById(`input_${idx}`).value || "-"]);
-      });
-      return data;
-    }
-
-    function exportToExcel() {
-      const data = getExportData();
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data_Input");
-      
-      let filename = `Rekap_${activeInputType}_${document.getElementById('guru-jadwal').value.replace('|','_')}.xlsx`;
-      XLSX.writeFile(wb, filename);
-    }
-
-    function exportRekapKelasExcel() {
-      const jadwal = document.getElementById('guru-jadwal').value;
-      if(!jadwal) return;
-      let data = [["NIS", "Nama Lengkap Siswa", "Kelas", "Mata Pelajaran"]];
-      currentSiswaData.forEach(s => {
-        data.push([s.nis, s.nama, jadwal.split('|')[0], jadwal.split('|')[1]]);
-      });
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Rekap_Kelas");
-      XLSX.writeFile(wb, `Rekap_Kelas_${jadwal.replace('|','_')}.xlsx`);
-    }
-
-    function exportToPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const data = getExportData();
-      const head = [data.shift()]; 
-
-      const title = `Lembar ${activeInputType === 'absen' ? 'Absensi Kehadiran' : 'Nilai Tugas/Ujian'}`;
-      const subtitle = `Kelas / Mapel : ${document.getElementById('guru-jadwal').value.replace('|',' - ')}`;
-      const byInfo = `Guru: ${currentUser.nama} | Tanggal: ${document.getElementById('guru-tanggal').value}`;
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text(title, 14, 20);
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(subtitle, 14, 27);
-      doc.text(byInfo, 14, 33);
-      
-      doc.autoTable({
-        head: head,
-        body: data,
-        startY: 38,
-        theme: 'striped',
-        headStyles: { fillColor: [79, 70, 229] }
-      });
-      
-      doc.save(`${title}_${document.getElementById('guru-jadwal').value.replace('|','_')}.pdf`);
-    }
-
-    async function downloadLegerAdmin() {
-      const res = await callAPI('getLeger', 'GET');
-      if(!res) return;
-
-      let legerData = [["KELAS", "NIS", "NAMA SISWA", "MATA PELAJARAN", "JENIS TUGAS", "NILAI", "TANGGAL INPUT"]];
-      let siswaDict = {};
-      
-      res.siswa.forEach((s, i) => {
-         if(i === 0) return;
-         siswaDict[s[0]] = { nama: s[1], kelas: s[2] };
-      });
-      
-      res.nilai.forEach((n, i) => {
-         if(i === 0) return;
-         let nis = n[6];
-         let sInfo = siswaDict[nis] || { nama: "Tidak Diketahui", kelas: n[3] };
-         let dateObj = new Date(n[1]);
-         let dateStr = isNaN(dateObj) ? n[1] : dateObj.toLocaleDateString('id-ID');
-         
-         legerData.push([ sInfo.kelas, nis, sInfo.nama, n[4], n[5], n[7], dateStr ]);
-      });
-      
-      let header = legerData.shift();
-      legerData.sort((a, b) => {
-         if(a[0] !== b[0]) return String(a[0]).localeCompare(String(b[0]));
-         if(a[2] !== b[2]) return String(a[2]).localeCompare(String(b[2]));
-         return String(a[3]).localeCompare(String(b[3]));
-      });
-      legerData.unshift(header);
-      
-      const ws = XLSX.utils.aoa_to_sheet(legerData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Master_Leger");
-      XLSX.writeFile(wb, "Leger_Nilai_Seluruh_Sekolah.xlsx");
-    }
-  </script>
-</body>
-</html>
+</script>
