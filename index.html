@@ -69,7 +69,7 @@
     <div id="view-landing" class="view-section active-view">
       <div class="text-center mb-12">
         <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Sistem Akademik Terpadu</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang-di Siaga Mengajar</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Selamat Datang di Siaga Mengajar</h1>
         <p class="text-slate-500 max-w-2xl mx-auto text-sm md:text-base">Portal Manajemen Akademik, Presensi, Nilai, dan Jurnal Harian Mengajar Guru. Silakan pilih portal akses Anda.</p>
       </div>
 
@@ -611,17 +611,20 @@
   </main>
 
   <script>
-    // MASUKKAN URL APP SCRIPT SAYA DI SINI:
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGIek0CEDYY-p9Fd_Nw9uknzh0gZfz3jFVbmJr135bNCA7dcAcjG3GKLYtNlekHMjj/exec'; 
+    // DEKLARASI VAR SCRIPT_URL UNTUK MENCEGAH REDECLARATION SYNTAX ERROR
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGIek0CEDYY-p9Fd_Nw9uknzh0gZfz3jFVbmJr135bNCA7dcAcjG3GKLYtNlekHMjj/exec"; 
+    if (localStorage.getItem('CONFIGURED_SCRIPT_URL')) {
+      SCRIPT_URL = localStorage.getItem('CONFIGURED_SCRIPT_URL');
+    }
     
-    let currentUser = null;
-    let activeInputType = ''; 
-    let currentGuruMode = 'input'; 
-    let currentSiswaData = [];
-    let currentRekapExportData = [];
-    let tamuChartInstance = null;
-    let currentTamuNilai = [];
-    let teacherJadwalList = [];
+    var currentUser = null;
+    var activeInputType = ''; 
+    var currentGuruMode = 'input'; 
+    var currentSiswaData = [];
+    var currentRekapExportData = [];
+    var tamuChartInstance = null;
+    var currentTamuNilai = [];
+    var teacherJadwalList = [];
 
     window.onload = function() {
       loadKelasTamu();
@@ -957,7 +960,6 @@
         uniqueKelas.forEach(k => { html += `<option value="${k}">${k}</option>`; });
         selKelas.innerHTML = html;
       } else {
-        // FALLBACK CERDAS: Jika jadwal di sheet belum ketemu/typo, tampilkan semua kelas dari Data_Siswa
         const resKelas = await callAPI('getKelas', 'GET');
         let html = '<option value="">-- Pilih Kelas (Semua Kelas) --</option>';
         (resKelas || []).forEach(k => { html += `<option value="${k}">${k}</option>`; });
@@ -994,7 +996,6 @@
           uniqueMapel.forEach(m => { html += `<option value="${m}">${m}</option>`; });
           selMapel.innerHTML = html;
         } else {
-          // FALLBACK CERDAS: Jika mapel spesifik tidak terfilter, muat daftar semua mapel sekolah
           const resMapel = await callAPI('getDaftarMapel', 'GET');
           let html = '<option value="">-- Pilih Mapel (Semua Mapel) --</option>';
           (resMapel || []).forEach(m => { html += `<option value="${m}">${m}</option>`; });
